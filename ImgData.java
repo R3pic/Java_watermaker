@@ -106,7 +106,7 @@ class ImgData {
             Image image = textToImage();
             int tilePadding = 3;
             // 타일을 그릴 영역 지정
-            Rectangle2D bounds = new Rectangle(0, 0, oriImage.getWidth() * 3, oriImage.getHeight() * 3);
+            Rectangle2D bounds = new Rectangle(0, 0, oriImage.getWidth() * 2, oriImage.getHeight() * 2);
             // 타일을 그릴 그래픽 생성
             BufferedImage outputImage = new BufferedImage((int)bounds.getWidth(), (int)bounds.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = outputImage.createGraphics();

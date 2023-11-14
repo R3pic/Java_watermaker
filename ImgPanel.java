@@ -61,8 +61,10 @@ class ImgPanel extends JPanel{
      * @return BufferedImage 리사이즈된 이미지
      */
     private BufferedImage imageResize(BufferedImage original){
-        int maxWidth = 500;
-        int maxHeight = 600;
+        int frWidth = getParent().getSize().width;
+        int frHeight = getParent().getSize().height;
+        int maxWidth = frWidth;
+        int maxHeight = frHeight;
 
         originalWidth = original.getWidth();
         originalHeight = original.getHeight();

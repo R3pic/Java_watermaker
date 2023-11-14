@@ -17,8 +17,7 @@ import javax.swing.JOptionPane;
  */
 class myMenubar extends JMenuBar{
     JMenu file, help;
-    JMenuItem fileselect,programexit, helpitem;
-    JFileChooser fileChooser;
+    JMenuItem fileSelect,fileSave,programexit, helpitem;
     //
     ImgPanel imgpanel;
     ImgData imgData;
@@ -32,20 +31,22 @@ class myMenubar extends JMenuBar{
         file = new JMenu("File");
         help = new JMenu("Help");
 
-        fileselect = new JMenuItem("File Select");
+        fileSelect = new JMenuItem("File Select");
+        fileSave = new JMenuItem("File Save");
         programexit = new JMenuItem("Program Exit");
         helpitem = new JMenuItem("Help");
 
         add(file);
         add(help);
 
-        file.add(fileselect);
+        file.add(fileSelect);
+        file.add(fileSave);
         file.addSeparator();
         file.add(programexit);
 
         help.add(helpitem);
 
-        fileselect.addActionListener(new ActionListener(){
+        fileSelect.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
                 loadImage = FileSelect();
                 if(loadImage != null){
@@ -55,7 +56,15 @@ class myMenubar extends JMenuBar{
                 }
             }
         });
-
+        fileSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    FileSave();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -64,7 +73,7 @@ class myMenubar extends JMenuBar{
      */
     private BufferedImage FileSelect(){
         BufferedImage loadImage;
-        fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser();
         fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
@@ -83,6 +92,25 @@ class myMenubar extends JMenuBar{
         }
         else{
             return null;
+        }
+    }
+
+    private void FileSave() throws IOException{
+        BufferedImage image = imgData.getImage();
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int ret = fileChooser.showOpenDialog(null);
+
+        if(ret == JFileChooser.APPROVE_OPTION){
+            try {
+                File savepath = fileChooser.getSelectedFile();
+                File outputFile = new File(savepath, "Output.png");
+                ImageIO.write(image, "png", outputFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -1,3 +1,5 @@
+import java.awt.event.WindowListener;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
@@ -32,8 +34,9 @@ public class waterMaker extends JFrame{
         if(imgData.getImage() == null)
             optPanel.setVisible(false);
         setVisible(true);
-        setBounds(0,0,700,700);
+        setBounds(0,0,1400,1000);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setResizable(false);
     }
     public static void main(String[] args) {
         new waterMaker();        
