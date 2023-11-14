@@ -43,13 +43,16 @@ class ImgData {
     public void setOpacity(float opacity){ this.opacity = opacity;  }
     public void setFont(String font){ this.font = font; }
     public void setText(String text){ 
-        if(text == "")
+        if(text.length() == 0)
             this.text = " ";
         else this.text = text; 
     }
     public void setColor(Color color){ this.selectColor = color; }
     public void setloc(int x, int y){ this.loc_x = x; this.loc_y = y; }
-
+    /**
+     * isTileChecked의 값에 따라 일반 이미지 또는 타일이미지와 로드된 이미지를 결합한 결과 반환
+     * @return BufferedImage
+     */
     private BufferedImage mergeImage(){
         BufferedImage waterMark;
         BufferedImage copyImage;
@@ -72,7 +75,10 @@ class ImgData {
         g2d.dispose();
         return copy;
     }
-
+    /**
+     * 텍스트를 이미지화 하는 메소드
+     * @return BufferedImage
+     */
     private BufferedImage textToImage(){
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = img.createGraphics();
@@ -101,6 +107,10 @@ class ImgData {
         return img;
     }
 
+    /**
+     * 이미지화된 텍스트를 타일화 시키는 메소드
+     * @return BufferedImage
+     */
     private BufferedImage textToTiledImage() {
             // 이미지 불러오기
             Image image = textToImage();

@@ -1,13 +1,5 @@
-import java.awt.event.WindowListener;
-
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
-
-
-// TODO
-// 먼저 imgData에서는 받아낸 이미지를 가공함(outputimg라는 변수에 저장하고 get하면 그변수 리턴)
-// 옵션패널에서 조정을 하면 imgdata에 값을 넘김.
-// imgdata
 
 /**
  * 메인프레임
