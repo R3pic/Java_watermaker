@@ -49,7 +49,11 @@ class ImgPanel extends JPanel{
      */
     public void updateImage(){
         BufferedImage img = imgData.getImage();
-        Image image = imageResize(img);
+        Image image;
+            if(img.getWidth() > 1920 || img.getHeight() > 1080)
+                image = imageResize(img);
+            else
+                image = img;
         ImageIcon icon = new ImageIcon(image);
         imgLabel.setIcon(icon);
         imgwhLabel.setText(originalWidth+" X "+originalHeight);
