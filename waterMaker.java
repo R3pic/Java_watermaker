@@ -1,122 +1,41 @@
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
+
+// TODO
+// 먼저 imgData에서는 받아낸 이미지를 가공함(outputimg라는 변수에 저장하고 get하면 그변수 리턴)
+// 옵션패널에서 조정을 하면 imgdata에 값을 넘김.
+// imgdata
 
 /**
- * 이미지패널, 조작패널, 메뉴바
+ * 메인프레임
+ * 이미지패널, 조작패널, 메뉴바를 가지고 있음.
  */
 public class waterMaker extends JFrame{
     JMenuBar menuBar;
-    JPanel imgPanel,optPanel;
+    ImgPanel imgPanel;
+    OptionPanel optPanel;
+    ImgData imgData;
 
     waterMaker(){
         super("워터마크 메이커");
 
-        menuBar = new myMenubar();
-
-        imgPanel = new imgPanel();
+        imgData = new ImgData();
+        imgPanel = new ImgPanel(imgData);
+        optPanel = new OptionPanel(imgPanel,imgData);
+        menuBar = new myMenubar(imgPanel, imgData, optPanel);
 
         add("North",menuBar);
         add("Center", imgPanel);
+        add("East", optPanel);
         
+        if(imgData.getImage() == null)
+            optPanel.setVisible(false);
         setVisible(true);
-        setBounds(0,0,500,600);
+        setBounds(0,0,700,700);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     public static void main(String[] args) {
         new waterMaker();        
-    }
-}
-
-class myMenubar extends JMenuBar{
-    JMenu file, help;
-    JMenuItem fileselect,programexit, helpitem;
-    JFileChooser fileChooser;
-
-    //
-    BufferedImage loadImage;
-    myMenubar(){
-        super();
-
-        file = new JMenu("File");
-        help = new JMenu("Help");
-
-        fileselect = new JMenuItem("File Select");
-        programexit = new JMenuItem("Program Exit");
-        helpitem = new JMenuItem("Help");
-
-        add(file);
-        add(help);
-
-        file.add(fileselect);
-        file.addSeparator();
-        file.add(programexit);
-
-        help.add(helpitem);
-
-        fileselect.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e) {
-                loadImage = FileSelect();
-            }
-            
-        });
-
-    }
-    public BufferedImage getloadedImage(){
-            return loadImage;
-        }
-
-    /**
-     * 메뉴바를 누를때 실행되는 메소드, JFilechooser로 파일을 가져옴
-     * @return BufferedImage
-     */
-    private BufferedImage FileSelect(){
-        BufferedImage loadImage;
-        fileChooser = new JFileChooser();
-        fileChooser.setCurrentDirectory(new File(System.getProperty("User.Downloads")));
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Image files", ImageIO.getReaderFileSuffixes()));
-
-        int ret = fileChooser.showOpenDialog(null);
-
-        if(ret != JFileChooser.APPROVE_OPTION){
-            JOptionPane.showMessageDialog(null, "경로를 선택하지 않았습니다.", "Non Path", JOptionPane.WARNING_MESSAGE);
-            return null;
-        }
-        else{
-            File selectedFile = fileChooser.getSelectedFile();
-            try{
-                loadImage = ImageIO.read(selectedFile);
-                return loadImage;
-            } catch(IOException e){
-                JOptionPane.showMessageDialog(null, "이미지를 불러오는데 실패했습니다.", "Load Failed.", JOptionPane.ERROR_MESSAGE);
-                return null;
-            }
-        }
-    }
-}
-
-/**
- * 이미지를 표시하는 클래스
- * Menu에서 로드한 이미지를 Panel에 표시해야함.
- */
-class imgPanel extends JPanel{
-    JLabel imgLabel;
-    imgPanel(){
-        super();
-        imgLabel = new JLabel();
-        imgLabel.setIcon(null);
-    }
-
-    public void updateImage(BufferedImage img){
-        Image image = img;
-        ImageIcon icon = new ImageIcon(image);
-        imgLabel.setIcon(icon);
     }
 }
