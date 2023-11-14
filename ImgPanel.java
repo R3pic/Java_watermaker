@@ -56,6 +56,8 @@ class ImgPanel extends JPanel{
                 image = img;
         ImageIcon icon = new ImageIcon(image);
         imgLabel.setIcon(icon);
+        originalWidth = imgData.getImage().getWidth();
+        originalHeight = imgData.getImage().getHeight();
         imgwhLabel.setText(originalWidth+" X "+originalHeight);
     }
 
@@ -69,9 +71,6 @@ class ImgPanel extends JPanel{
         int frHeight = getParent().getSize().height;
         int maxWidth = frWidth;
         int maxHeight = frHeight;
-
-        originalWidth = original.getWidth();
-        originalHeight = original.getHeight();
 
         double aspectRatio = (double) originalWidth / originalHeight;
         int newWidth = maxWidth;
