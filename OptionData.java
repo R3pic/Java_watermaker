@@ -1,6 +1,10 @@
 import java.awt.Color;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 
-public class OptionData {
+public class OptionData{
     private boolean istileMode;
     private int fontSize = 32;
     private float opacity = 0.5f;
@@ -48,4 +52,56 @@ public class OptionData {
     public int getLocX() { return this.locX; }
     public int getLocY() { return this.locY; }
     public int getDegree() { return this.degree; }
+
+    public void optionSave() {
+    Properties props = new Properties();
+    props.setProperty("tileMode", Boolean.toString(istileMode));
+    props.setProperty("fontSize", Integer.toString(fontSize));
+    props.setProperty("opacity", Float.toString(opacity));
+    props.setProperty("font", font != null ? font : "");
+    props.setProperty("text", text);
+    props.setProperty("color", colorToString(color)); // Color 객체를 문자열로 변환
+    props.setProperty("locX", Integer.toString(locX));
+    props.setProperty("locY", Integer.toString(locY));
+    props.setProperty("degree", Integer.toString(degree));
+
+    try (FileOutputStream fos = new FileOutputStream("config.properties")) {
+            props.store(fos, null);
+    } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    private String colorToString(Color color) {
+        return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
+    }
+
+    public void optionLoad() {
+    Properties props = new Properties();
+
+    try (FileInputStream fis = new FileInputStream("config.properties")) {
+        props.load(fis);
+
+        istileMode = Boolean.parseBoolean(props.getProperty("tileMode"));
+        fontSize = Integer.parseInt(props.getProperty("fontSize"));
+        opacity = Float.parseFloat(props.getProperty("opacity"));
+        font = props.getProperty("font");
+        text = props.getProperty("text");
+        color = stringToColor(props.getProperty("color"));
+        locX = Integer.parseInt(props.getProperty("locX"));
+        locY = Integer.parseInt(props.getProperty("locY"));
+        degree = Integer.parseInt(props.getProperty("degree"));
+    } catch (IOException e) {
+        e.printStackTrace();
+        }
+    }
+
+    private Color stringToColor(String value) {
+        String[] rgb = value.split(",");
+        return new Color(
+            Integer.parseInt(rgb[0]),
+            Integer.parseInt(rgb[1]),
+            Integer.parseInt(rgb[2])
+        );
+    }
+
 }

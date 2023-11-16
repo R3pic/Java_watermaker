@@ -173,18 +173,30 @@ class OptionPanel extends JPanel{
         });
     }
 
-
     private Color pickColor(){
-        JColorChooser chooser = new JColorChooser();
+        jColorChooser = new JColorChooser();
         // chooser.getSelectionModel().addChangeListener(new ChangeListener() {
         //     public void stateChanged(ChangeEvent e){
         //         Color selectColor = chooser.getColor();
         //     }
         // });
-        JDialog dialog = JColorChooser.createDialog(null, "Choose Color", true, chooser, null, null);
+        JDialog dialog = JColorChooser.createDialog(null, "Choose Color", true, jColorChooser, null, null);
         dialog.setVisible(true);
         
-        return chooser.getColor();
+        return jColorChooser.getColor();
     }
 
+    public void SyncOption(OptionData optionData) {
+        fontSize_Spinners.setValue(optionData.getFontSize());
+        inputText_Field.setText(optionData.getText());
+        opacitySlider.setValue((int) (optionData.getOpacity() * 100));
+        opacityLabel.setText("폰트 투명도     "+String.valueOf((int) (optionData.getOpacity() * 100)));
+        chooseFont.setSelectedItem(optionData.getFont());
+        jColorChooser.setColor(optionData.getColor());
+        colorChooser.setBackground(optionData.getColor());
+        tilemodbCheckBox.setSelected(optionData.getTileMode());
+        loc_xtf.setValue(optionData.getLocX());
+        loc_ytf.setValue(optionData.getLocY());
+        degreeSlider.setValue(optionData.getDegree());
+    }
 }

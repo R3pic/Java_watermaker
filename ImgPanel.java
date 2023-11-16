@@ -49,7 +49,10 @@ class ImgPanel extends JPanel{
      */
     public void updateImage(){
         BufferedImage img = imgData.getImage();
-        Image image;
+                Image image;
+        if(img == null){
+            return;
+        }
             if(img.getWidth() > 1920 || img.getHeight() > 1080)
                 image = imageResize(img);
             else
