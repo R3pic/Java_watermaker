@@ -72,7 +72,7 @@ class myMenubar extends JMenuBar{
                 try {
                     FileSave();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "로드된 이미지가 없습니다.");
                 }
             }
         });
@@ -89,6 +89,7 @@ class myMenubar extends JMenuBar{
                 }
                 else{
                     optionData.optionSave();
+                    JOptionPane.showMessageDialog(null, "현재 옵션을 저장하였습니다.");
                 }
             }
         });

@@ -53,6 +53,9 @@ public class OptionData{
     public int getLocY() { return this.locY; }
     public int getDegree() { return this.degree; }
 
+    /**
+     * 옵션을 세이브하는 메소드 현재 객체의 정보를 config.properties에 저장한다.
+     */
     public void optionSave() {
     Properties props = new Properties();
     props.setProperty("tileMode", Boolean.toString(istileMode));
@@ -74,7 +77,9 @@ public class OptionData{
     private String colorToString(Color color) {
         return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
     }
-
+    /** 
+     * 옵션을 로드하는 메소드, config.properties에 적혀있는 정보를 로드한다.
+    */
     public void optionLoad() {
     Properties props = new Properties();
 
