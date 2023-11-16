@@ -1,10 +1,11 @@
 import java.awt.AlphaComposite;
-import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
@@ -13,13 +14,11 @@ import java.awt.image.BufferedImage;
  */
 class ImgData {
     private BufferedImage oriImage = null;
-    private boolean isTileChecked;
-    int fontsize = 32;
-    float opacity = 0.5f;
-    String font;
-    String text = "Plain Text.";
-    Color selectColor = Color.black;
-    int loc_x,loc_y;
+    OptionData optionData;
+
+    ImgData(OptionData optionData){
+        this.optionData = optionData;
+    }
 
     /*
      * 원본 이미지를 저장함
@@ -37,18 +36,7 @@ class ImgData {
         return mergeImage();
     }
 
-    //OptionPanel에서 변경할 때 사용되는 메소드들
-    public void setTileMode(boolean isTileChecked){ this.isTileChecked = isTileChecked; }
-    public void setFontSize(int fontsize){  this.fontsize = fontsize;   }
-    public void setOpacity(float opacity){ this.opacity = opacity;  }
-    public void setFont(String font){ this.font = font; }
-    public void setText(String text){ 
-        if(text.length() == 0)
-            this.text = " ";
-        else this.text = text; 
-    }
-    public void setColor(Color color){ this.selectColor = color; }
-    public void setloc(int x, int y){ this.loc_x = x; this.loc_y = y; }
+    
     /**
      * isTileChecked의 값에 따라 일반 이미지 또는 타일이미지와 로드된 이미지를 결합한 결과 반환
      * @return BufferedImage
@@ -57,13 +45,13 @@ class ImgData {
         BufferedImage waterMark;
         BufferedImage copyImage;
         copyImage = copyImage(oriImage);
-        if(isTileChecked == false)
+        if(optionData.getTileMode() == false)
             waterMark = textToImage();
         else
             waterMark = textToTiledImage();
         
         Graphics2D g2d = copyImage.createGraphics();
-        g2d.drawImage(waterMark, loc_x, loc_y, null);
+        g2d.drawImage(waterMark, optionData.getLocX(), optionData.getLocY(), null);
         g2d.dispose();
         return copyImage;
     }
@@ -80,17 +68,28 @@ class ImgData {
      * @return BufferedImage
      */
     private BufferedImage textToImage(){
-        BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = img.createGraphics();
-        Font cfont = new Font(font, Font.PLAIN, fontsize);
+        Font cfont = new Font(optionData.getFont(), Font.PLAIN, optionData.getFontSize());
+
+        // 텍스트 크기 측정을 위한 임시 그래픽스 컨텍스트
+        BufferedImage tempImg = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = tempImg.createGraphics();
         g2d.setFont(cfont);
-        java.awt.FontMetrics fm = g2d.getFontMetrics();
-        int width = fm.stringWidth(text);
-        int height = fm.getHeight();
+        FontMetrics fm = g2d.getFontMetrics();
+        int textWidth = fm.stringWidth(optionData.getText());
+        int textHeight = fm.getHeight();
         g2d.dispose();
-        img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
+        // 회전에 필요한 이미지 크기 계산
+        double radians = Math.toRadians(optionData.getDegree());
+        double sin = Math.abs(Math.sin(radians)), cos = Math.abs(Math.cos(radians));
+        int width = (int) Math.floor(textWidth * cos + textHeight * sin);
+        int height = (int) Math.floor(textHeight * cos + textWidth * sin);
+
+        // 회전된 텍스트를 위한 이미지 생성
+        BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         g2d = img.createGraphics();
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
+
+        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, optionData.getOpacity()));
         g2d.setRenderingHint(RenderingHints.KEY_ALPHA_INTERPOLATION, RenderingHints.VALUE_ALPHA_INTERPOLATION_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_QUALITY);
@@ -99,11 +98,17 @@ class ImgData {
         g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
         g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
         g2d.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+        // 회전 설정
+        AffineTransform at = AffineTransform.getRotateInstance(radians, width / 2.0, height / 2.0);
+        at.translate((width - textWidth) / 2.0, (height - textHeight) / 2.0 + fm.getAscent());
+        g2d.setTransform(at);
+
+        // 텍스트 렌더링
         g2d.setFont(cfont);
-        fm = g2d.getFontMetrics();
-        g2d.setColor(selectColor);
-        g2d.drawString(text, 0, fm.getAscent());
+        g2d.setColor(optionData.getColor());
+        g2d.drawString(optionData.getText(), 0, 0);
         g2d.dispose();
+
         return img;
     }
 

@@ -9,15 +9,16 @@ public class waterMaker extends JFrame{
     JMenuBar menuBar;
     ImgPanel imgPanel;
     OptionPanel optPanel;
+    OptionData optionData;
     ImgData imgData;
 
     waterMaker(){
         super("워터마크 메이커");
-
-        imgData = new ImgData();
+        optionData = new OptionData();
+        imgData = new ImgData(optionData);
         imgPanel = new ImgPanel(imgData);
-        optPanel = new OptionPanel(imgPanel,imgData);
-        menuBar = new myMenubar(imgPanel, imgData, optPanel);
+        optPanel = new OptionPanel(imgPanel,imgData, optionData);
+        menuBar = new myMenubar(imgPanel, imgData, optPanel, optionData);
 
         add("North",menuBar);
         add("Center", imgPanel);

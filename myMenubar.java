@@ -2,7 +2,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -16,33 +20,44 @@ import javax.swing.JOptionPane;
  * 메뉴들을 가지고 있고, FileSelect을 누르면 이미지를 불러옴.
  */
 class myMenubar extends JMenuBar{
-    JMenu file, help;
-    JMenuItem fileSelect,fileSave,programexit, helpitem;
+    JMenu file, help, tool;
+    JMenuItem fileSelect,fileSave,programexit, helpitem, optionSave, optionLoad;
     //
     ImgPanel imgpanel;
     ImgData imgData;
     OptionPanel optPanel;
+    OptionData optionData;
     //
     BufferedImage loadImage;
-    myMenubar(ImgPanel imgPanel, ImgData imgData, OptionPanel optPanel){
+    //옵션 데이터들
+    
+    myMenubar(ImgPanel imgPanel, ImgData imgData, OptionPanel optPanel, OptionData optionData){
         this.imgpanel = imgPanel;
         this.imgData = imgData;
         this.optPanel = optPanel;
+        this.optionData = optionData;
         file = new JMenu("File");
         help = new JMenu("Help");
+        tool = new JMenu("Tool");
 
         fileSelect = new JMenuItem("File Select");
         fileSave = new JMenuItem("File Save");
         programexit = new JMenuItem("Program Exit");
+        optionSave = new JMenuItem("Option Save");
+        optionLoad = new JMenuItem("Option Load");
         helpitem = new JMenuItem("Help");
 
         add(file);
+        add(tool);
         add(help);
 
         file.add(fileSelect);
         file.add(fileSave);
         file.addSeparator();
         file.add(programexit);
+
+        tool.add(optionSave);
+        tool.add(optionLoad);
 
         help.add(helpitem);
 
@@ -63,6 +78,21 @@ class myMenubar extends JMenuBar{
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
+            }
+        });
+        programexit.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                System.exit(0);
+            }
+        });
+        optionSave.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                optionSave();
+            }
+        });
+        optionLoad.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                optionLoad();
             }
         });
     }
@@ -112,5 +142,55 @@ class myMenubar extends JMenuBar{
                 e.printStackTrace();
             }
         }
+    }
+
+
+    /**
+     * OptionData객체를 저장함
+     * 
+     */
+    private void optionSave(){
+        File file = new File("\\option", "option.option");
+		FileOutputStream fos = null;
+		ObjectOutputStream oos = null;
+        try{
+            fos = new FileOutputStream(file);
+			oos = new ObjectOutputStream(fos);
+
+            oos.writeObject(optionData);
+        } catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(oos != null) oos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+    }
+
+    private void optionLoad(){
+        File file = new File("\\option", "option.option");
+        FileInputStream fis = null;
+		ObjectInputStream ois = null;
+        try {
+			fis = new FileInputStream(file);
+			ois = new ObjectInputStream(fis);
+			
+            OptionData readoptionData = (OptionData) ois.readObject();
+            optionData = readoptionData;
+        } catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(ois != null) ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+
     }
 }

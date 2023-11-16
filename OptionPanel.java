@@ -30,26 +30,23 @@ class OptionPanel extends JPanel{
     JSpinner fontSize_Spinners;
     JTextField inputText_Field;
     JSlider opacitySlider;
+    JLabel opacityLabel;
     JComboBox<String> chooseFont;
     JColorChooser jColorChooser;
     JButton colorChooser;
     JCheckBox tilemodbCheckBox;
     JSpinner loc_xtf,loc_ytf;
+    JSlider degreeSlider;
     //데이터
     ImgData imgData;
     ImgPanel imgPanel;
     BufferedImage bufimg;
-    int fontsize = 32;
-    float opacity = 0.5f;
-    String font;
-    String text = "Plain Text.";
-    Color selectColor = Color.black;
-    boolean isTileChecked = false;
-    int loc_x,loc_y;
+    OptionData optionData;
 
-    OptionPanel(ImgPanel imgPanel, ImgData imgData){
+    OptionPanel(ImgPanel imgPanel, ImgData imgData, OptionData optionData){
         this.imgData = imgData;
         this.imgPanel = imgPanel;
+        this.optionData = optionData;
         bufimg = (BufferedImage) imgData.getImage();
         setBorder(new LineBorder(Color.black));
         setLayout(new GridLayout(30,3));
@@ -63,6 +60,7 @@ class OptionPanel extends JPanel{
         fontSize_Spinners.setValue(32);
         //투명도 선택
         opacitySlider = new JSlider(0,100);
+        opacityLabel = new JLabel("폰트 투명도     "+opacitySlider.getValue()+"%");
         //컬러 선택
         colorChooser = new JButton("색상 선택");
         //텍스트 입력필드
@@ -74,12 +72,17 @@ class OptionPanel extends JPanel{
         loc_ytf = new JSpinner();
         loc_xtf.setValue(0);
         loc_ytf.setValue(0);
+        //각도 슬라이더
+        degreeSlider = new JSlider(0, 360);
+        degreeSlider.setMajorTickSpacing(60);
+        degreeSlider.setMinorTickSpacing(10);
+        degreeSlider.setPaintTicks(true);
 
         add(new JLabel("폰트선택"));
         add(chooseFont);
         add(new JLabel("폰트 크기"));
         add(fontSize_Spinners);
-        add(new JLabel("폰트 투명도"));
+        add(opacityLabel);
         add(opacitySlider);
         add(new JLabel("색상 선택"));
         add(colorChooser);
@@ -90,74 +93,80 @@ class OptionPanel extends JPanel{
         add(loc_xtf);
         add(new JLabel("Y"));
         add(loc_ytf);
+        add(new JLabel("텍스트 각도"));
+        add(degreeSlider);
 
         colorChooser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                colorChooser.setBackground(selectColor = pickColor());
-                imgData.setColor(selectColor);
+                Color color = pickColor();
+                colorChooser.setBackground(color);
+                optionData.setColor(color);
                 imgPanel.updateImage();
             }
         });
         chooseFont.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED){
-                    font = chooseFont.getSelectedItem().toString();
-                    imgData.setFont(font);
+                    String font = chooseFont.getSelectedItem().toString();
+                    optionData.setFont(font);
                     imgPanel.updateImage();
                 }
             }
         });
         loc_xtf.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                loc_x = (int) loc_xtf.getValue();
-                imgData.setloc(loc_x, loc_y);
+                int loc_x = (int) loc_xtf.getValue();
+                optionData.setlocX(loc_x);
                 imgPanel.updateImage();
             }
         });
         loc_ytf.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                loc_y = (int) loc_ytf.getValue();
-                imgData.setloc(loc_x, loc_y);
+                int loc_y = (int) loc_ytf.getValue();
+                optionData.setlocY(loc_y);
                 imgPanel.updateImage();
             }
         });
         inputText_Field.getDocument().addDocumentListener(new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {}
             public void removeUpdate(DocumentEvent e) {
-                text = inputText_Field.getText();
-                imgData.setText(text);
+                optionData.setText(inputText_Field.getText());
                 imgPanel.updateImage();
             }
             public void insertUpdate(DocumentEvent e) {
-                text = inputText_Field.getText();
-                imgData.setText(text);
+                optionData.setText(inputText_Field.getText());
                 imgPanel.updateImage();
             }
         });
         fontSize_Spinners.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                fontsize = (int) fontSize_Spinners.getValue();
-                imgData.setFontSize(fontsize);
+                optionData.setFontSize((int) fontSize_Spinners.getValue());
                 imgPanel.updateImage();
             }
         });
         opacitySlider.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
-                opacity = (float)opacitySlider.getValue() / 100f;
-                imgData.setOpacity(opacity);
+                float opacity = (float)opacitySlider.getValue() / 100f;
+                optionData.setOpacity(opacity);
+                opacityLabel.setText("폰트 투명도     "+opacitySlider.getValue()+"%");
+                imgPanel.updateImage();
+            }
+        });
+        degreeSlider.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                int degree = degreeSlider.getValue();
+                optionData.setDegree(degree);
                 imgPanel.updateImage();
             }
         });
         tilemodbCheckBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 if(e.getStateChange() == ItemEvent.SELECTED){
-                    isTileChecked = true;
-                    imgData.setTileMode(isTileChecked);
+                    optionData.setTileMode(true);
                     imgPanel.updateImage();
                 }
                 else{
-                    isTileChecked = false;
-                    imgData.setTileMode(isTileChecked);
+                    optionData.setTileMode(false);
                     imgPanel.updateImage();
                 }
             }
@@ -167,14 +176,15 @@ class OptionPanel extends JPanel{
 
     private Color pickColor(){
         JColorChooser chooser = new JColorChooser();
-        chooser.getSelectionModel().addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent e){
-                selectColor = chooser.getColor();
-            }
-        });
+        // chooser.getSelectionModel().addChangeListener(new ChangeListener() {
+        //     public void stateChanged(ChangeEvent e){
+        //         Color selectColor = chooser.getColor();
+        //     }
+        // });
         JDialog dialog = JColorChooser.createDialog(null, "Choose Color", true, chooser, null, null);
         dialog.setVisible(true);
-            return selectColor;
+        
+        return chooser.getColor();
     }
 
 }
