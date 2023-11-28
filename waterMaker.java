@@ -19,6 +19,8 @@ public class waterMaker extends JFrame{
         imgPanel = new ImgPanel(imgData);
         optPanel = new OptionPanel(imgPanel,imgData, optionData);
         menuBar = new myMenubar(imgPanel, imgData, optPanel, optionData);
+        //시작할때 무조건 optionLoad()를 함.
+        optionData.optionLoad();
 
         add("North",menuBar);
         add("Center", imgPanel);

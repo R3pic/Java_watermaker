@@ -25,7 +25,6 @@ class myMenubar extends JMenuBar{
     OptionData optionData;
     //
     BufferedImage loadImage;
-    //옵션 데이터들
     
     myMenubar(ImgPanel imgPanel, ImgData imgData, OptionPanel optPanel, OptionData optionData){
         this.imgpanel = imgPanel;

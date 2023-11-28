@@ -97,6 +97,7 @@ public class OptionData{
         degree = Integer.parseInt(props.getProperty("degree"));
     } catch (IOException e) {
         e.printStackTrace();
+        System.out.println("옵션파일이 없음.");
         }
     }
 

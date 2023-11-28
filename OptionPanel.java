@@ -186,6 +186,9 @@ class OptionPanel extends JPanel{
         return jColorChooser.getColor();
     }
 
+    /*
+     * 옵션데이터로 현재패널에 연동하는 메소드
+     */
     public void SyncOption(OptionData optionData) {
         fontSize_Spinners.setValue(optionData.getFontSize());
         inputText_Field.setText(optionData.getText());
