@@ -51,7 +51,7 @@ class ImgData {
             waterMark = textToTiledImage();
         
         Graphics2D g2d = copyImage.createGraphics();
-        g2d.drawImage(waterMark, optionData.getLocX(), optionData.getLocY(), null);
+        g2d.drawImage(waterMark, optionData.getLocX()+140, optionData.getLocY(), null);
         g2d.dispose();
         return copyImage;
     }
@@ -121,7 +121,7 @@ class ImgData {
             Image image = textToImage();
             int tilePadding = 3;
             // 타일을 그릴 영역 지정
-            Rectangle2D bounds = new Rectangle(0, 0, oriImage.getWidth() * 2, oriImage.getHeight() * 2);
+            Rectangle2D bounds = new Rectangle(0, 0, (int)(oriImage.getWidth() * 1.5f), (int)(oriImage.getHeight() * 1.5f));
             // 타일을 그릴 그래픽 생성
             BufferedImage outputImage = new BufferedImage((int)bounds.getWidth(), (int)bounds.getHeight(), BufferedImage.TYPE_INT_ARGB);
             Graphics2D g2 = outputImage.createGraphics();

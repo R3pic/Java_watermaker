@@ -34,7 +34,7 @@ class ImgPanel extends JPanel{
         imgPanel.add(imgLabel);
 
         imgwhpPanel = new JPanel();
-        imgwhLabel = new JLabel();
+        imgwhLabel = new JLabel("로드된 이미지 없음");
         imgwhpPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         imgwhpPanel.add(imgwhLabel);
 

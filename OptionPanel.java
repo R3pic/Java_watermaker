@@ -44,6 +44,7 @@ class OptionPanel extends JPanel{
     OptionData optionData;
 
     OptionPanel(ImgPanel imgPanel, ImgData imgData, OptionData optionData){
+        jColorChooser = new JColorChooser();
         this.imgData = imgData;
         this.imgPanel = imgPanel;
         this.optionData = optionData;
@@ -174,7 +175,7 @@ class OptionPanel extends JPanel{
     }
 
     private Color pickColor(){
-        jColorChooser = new JColorChooser();
+        
         // chooser.getSelectionModel().addChangeListener(new ChangeListener() {
         //     public void stateChanged(ChangeEvent e){
         //         Color selectColor = chooser.getColor();

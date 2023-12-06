@@ -11,8 +11,8 @@ public class OptionData{
     private String font;
     private String text = "Plain Text.";
     private Color color = Color.black;
-    private int locX;
-    private int locY;
+    private int locX = 0;
+    private int locY = 0;
     private int degree = 0;
 
     OptionData(){}
@@ -74,9 +74,7 @@ public class OptionData{
             e.printStackTrace();
         }
     }
-    private String colorToString(Color color) {
-        return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
-    }
+
     /** 
      * 옵션을 로드하는 메소드, config.properties에 적혀있는 정보를 로드한다.
     */
@@ -108,6 +106,10 @@ public class OptionData{
             Integer.parseInt(rgb[1]),
             Integer.parseInt(rgb[2])
         );
+    }
+
+    private String colorToString(Color color) {
+        return color.getRed() + "," + color.getGreen() + "," + color.getBlue();
     }
 
 }
