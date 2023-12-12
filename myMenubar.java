@@ -1,3 +1,4 @@
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -6,6 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -25,12 +27,15 @@ class myMenubar extends JMenuBar{
     OptionData optionData;
     //
     BufferedImage loadImage;
+    //
+    JFrame frame;
     
-    myMenubar(ImgPanel imgPanel, ImgData imgData, OptionPanel optPanel, OptionData optionData){
+    myMenubar(ImgPanel imgPanel, ImgData imgData, OptionPanel optPanel, OptionData optionData, JFrame frame){
         this.imgpanel = imgPanel;
         this.imgData = imgData;
         this.optPanel = optPanel;
         this.optionData = optionData;
+        this.frame = frame;
         file = new JMenu("File");
         help = new JMenu("Help");
         tool = new JMenu("Tool");
@@ -63,6 +68,7 @@ class myMenubar extends JMenuBar{
                     imgData.setImage(loadImage);
                     imgPanel.updateImage();
                     optPanel.setVisible(true);
+                    frame.pack();
                 }
             }
         });
@@ -104,6 +110,14 @@ class myMenubar extends JMenuBar{
                 }
             }
         });
+        helpitem.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e){
+                if(imgData.getImage() == null){
+                    JOptionPane.showMessageDialog(null, "1. 이미지를 로드한다.\n 2. 설정값을 변경한다. \n 3. 이미지를 저장한다.");
+                    return;
+                }
+            }
+        });
     }
 
     /**
@@ -142,15 +156,23 @@ class myMenubar extends JMenuBar{
 
         int ret = fileChooser.showOpenDialog(null);
 
-        if(ret == JFileChooser.APPROVE_OPTION){
+        if (ret == JFileChooser.APPROVE_OPTION) {
             try {
                 File savepath = fileChooser.getSelectedFile();
-                File outputFile = new File(savepath, "Output.png");
+                String baseName = "Output";
+                String extension = ".png";
+                File outputFile = new File(savepath, baseName + extension);
+
+                int counter = 1;
+                while (outputFile.exists()) {
+                    outputFile = new File(savepath, baseName + "_" + counter + extension);
+                    counter++;
+                }
+
                 ImageIO.write(image, "png", outputFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
 }

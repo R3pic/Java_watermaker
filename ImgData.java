@@ -51,7 +51,7 @@ class ImgData {
             waterMark = textToTiledImage();
         
         Graphics2D g2d = copyImage.createGraphics();
-        g2d.drawImage(waterMark, optionData.getLocX()+140, optionData.getLocY(), null);
+        g2d.drawImage(waterMark, optionData.getLocX(), optionData.getLocY(), null);
         g2d.dispose();
         return copyImage;
     }

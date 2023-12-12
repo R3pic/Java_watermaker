@@ -18,7 +18,7 @@ public class waterMaker extends JFrame{
         imgData = new ImgData(optionData);
         imgPanel = new ImgPanel(imgData);
         optPanel = new OptionPanel(imgPanel,imgData, optionData);
-        menuBar = new myMenubar(imgPanel, imgData, optPanel, optionData);
+        menuBar = new myMenubar(imgPanel, imgData, optPanel, optionData, this);
         
 
         add("North",menuBar);
